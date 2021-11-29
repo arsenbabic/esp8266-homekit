@@ -1,18 +1,12 @@
 /*
- * Example05_WS2812_Neopixel.ino
+ * ESP2866_Homekit.ino
  *
- *  Created on: 2020-10-01
- *      Author: Juergen Fink
+ *  Created on: 2021-11-30
+ *      Author: ababic
  *	Thanks to all the other helpful people commenting here.
  *
- * This example allows to change brightness and color of a connected neopixel strip/matrix
- *
- * You should:
- * 1. read and use the Example01_TemperatureSensor with detailed comments
- *    to know the basic concept and usage of this library before other examples。
- * 2. erase the full flash or call homekit_storage_reset() in setup()
- *    to remove the previous HomeKit pairing storage and
- *    enable the pairing with the new accessory of this new HomeKit example.
+ * This example allows to change brightness of a connected WS2812B strip 
+ * and reads additional temperature sensor data. (currently dummy readings)
  */
 
 
