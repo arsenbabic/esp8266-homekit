@@ -3,7 +3,7 @@
  *
  *  Created on: 2021-11-30
  *      Author: ababic
- *	Thanks to all the other helpful people commenting here.
+ *  Thanks to all the other helpful people commenting here.
  *
  * This example allows to change brightness of a connected WS2812B strip 
  * and reads additional temperature sensor data. (currently dummy readings)
@@ -29,16 +29,18 @@ FASTLED_USING_NAMESPACE
 //#define CLK_PIN   4
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
-#define NUM_LEDS    120 //added more leds
+#define NUM_LEDS    120 //added more LEDs
 CRGB leds[NUM_LEDS];
 
-#define BRIGHTNESS          00
+#define BRIGHTNESS          20
 #define FRAMES_PER_SECOND  120
 
 float current_brightness =  BRIGHTNESS;
 
+extern "C" homekit_characteristic_t cha_bright;
+
 void setup() {
-  //homekit_server_reset();  // needed when paired accessory has been unpaired and cannot be detected by iOS again
+  //homekit_server_reset(); // needed when paired accessory has been unpaired and cannot be detected by iOS again
   Serial.begin(115200);
   wifi_connect(); // in wifi_info.h
   
@@ -52,8 +54,8 @@ void setup() {
   // set master brightness control
   FastLED.setBrightness(BRIGHTNESS);
 
-  // limit my draw to 400mA at 5v of power draw  // most of the development boards have 500mA fuse on USB, so if powered through USB and 5V pin, this avoids fuse going off
-   FastLED.setMaxPowerInVoltsAndMilliamps(5,400);
+  // limit my draw to 450mA at 5v of power draw // most of the development boards have 500mA fuse on USB, so if powered through USB and 5V pin, this avoids fuse going off
+   FastLED.setMaxPowerInVoltsAndMilliamps(5,450);
 }
 
 
@@ -66,9 +68,15 @@ uint8_t gHue = 0; // rotating "base color" used by many of the patterns
   
 void loop()
 {
-  // Call the current pattern function once, updating the 'leds' array
-  gPatterns[gCurrentPatternNumber]();
+    my_homekit_loop();
+  delay(10);
+}
 
+void my_led_strip()
+{
+// Call the current pattern function once, updating the 'leds' array
+  gPatterns[gCurrentPatternNumber]();
+  
   // send the 'leds' array out to the actual LED strip
   FastLED.show();  
   // insert a delay to keep the framerate modest
@@ -77,9 +85,6 @@ void loop()
   // do some periodic updates
   EVERY_N_MILLISECONDS( 20 ) { gHue++; } // slowly cycle the "base color" through the rainbow
   EVERY_N_SECONDS( 10 ) { nextPattern(); } // change patterns periodically
-
-    my_homekit_loop();
-  delay(10);
 }
 
 #define ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
@@ -166,6 +171,7 @@ static uint32_t next_report_millis = 0;
 void my_homekit_setup() {
   cha_on.setter = set_on;
   cha_bright.setter = set_bright;
+  updateBrightness();
    
   arduino_homekit_setup(&accessory_config);
 
@@ -173,16 +179,24 @@ void my_homekit_setup() {
 
 void my_homekit_loop() {
   arduino_homekit_loop(); 
+  if(is_on)
+  {
+      my_led_strip();
+    }
+  else if(!is_on) //lamp - switch to off
+  {
+    
+  }
  
  const uint32_t t = millis();
  if (t > next_report_millis) {
-    // report sensor values every 10 seconds
-    next_report_millis = t + 10 * 1000;
+    // report sensor values every 5 seconds
+    next_report_millis = t + 5 * 1000;
     my_homekit_report();
   }
   if (t > next_heap_millis) {
-    // show heap info every 5 seconds
-    next_heap_millis = t + 5 * 1000;
+    // show heap info every 10 seconds
+    next_heap_millis = t + 10 * 1000;
     LOG_D("Free heap: %d, HomeKit clients: %d",
         ESP.getFreeHeap(), arduino_homekit_connected_clients_count());
 
@@ -208,10 +222,12 @@ void set_on(const homekit_value_t v) {
         is_on = true;
         Serial.println("On");
         updateBrightness();
+        my_led_strip();
     } else  {
         is_on = false;
         Serial.println("Off");
         updateBrightness();
+        my_led_strip();
     }
 }
 
@@ -221,7 +237,6 @@ void set_bright(const homekit_value_t v) {
     cha_bright.value.int_value = bright; //sync the value
 
     current_brightness = bright;
-
     updateBrightness();
 }
 
