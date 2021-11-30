@@ -8,6 +8,6 @@ Homekit integration on ESP8266 based development board
 - Homekit-ESP8266 library
 
 
-ESP8266 development board I am currently using is [Croduino Nova2](https://e-radionica.com/en/croduino-nova2.html). 
+ESP8266 development board I am currently using is [Croduino NOVA2](https://e-radionica.com/en/croduino-nova2.html). 
 
 Data pin of the standard 5V WS2812B addressable LED strip is attached to pin 4 on the development board.  
