@@ -29,22 +29,21 @@ FASTLED_USING_NAMESPACE
 //#define CLK_PIN   4
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
-#define NUM_LEDS    1
+#define NUM_LEDS    120 //added more leds
 CRGB leds[NUM_LEDS];
 
-#define BRIGHTNESS          100
+#define BRIGHTNESS          00
 #define FRAMES_PER_SECOND  120
 
 float current_brightness =  BRIGHTNESS;
 
 void setup() {
+  //homekit_server_reset();  // needed when paired accessory has been unpaired and cannot be detected by iOS again
   Serial.begin(115200);
   wifi_connect(); // in wifi_info.h
   
   delay(3000); // 3 second delay for recovery
   my_homekit_setup();
-
-  pinMode(LED_BUILTIN, OUTPUT);
   
   // tell FastLED about the LED strip configuration
   FastLED.addLeds<LED_TYPE,DATA_PIN,COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
@@ -53,9 +52,10 @@ void setup() {
   // set master brightness control
   FastLED.setBrightness(BRIGHTNESS);
 
-  // limit my draw to 800mA at 5v of power draw
-   FastLED.setMaxPowerInVoltsAndMilliamps(5,800);
+  // limit my draw to 400mA at 5v of power draw  // most of the development boards have 500mA fuse on USB, so if powered through USB and 5V pin, this avoids fuse going off
+   FastLED.setMaxPowerInVoltsAndMilliamps(5,400);
 }
+
 
 // List of patterns to cycle through.  Each is defined as a separate function below.
 typedef void (*SimplePatternList[])();
@@ -167,13 +167,12 @@ void my_homekit_setup() {
   cha_on.setter = set_on;
   cha_bright.setter = set_bright;
    
-	arduino_homekit_setup(&accessory_config);
+  arduino_homekit_setup(&accessory_config);
 
 }
 
 void my_homekit_loop() {
-	arduino_homekit_loop();
- //FastLED.setBrightness(cha_bright);	
+  arduino_homekit_loop(); 
  
  const uint32_t t = millis();
  if (t > next_report_millis) {
@@ -208,11 +207,11 @@ void set_on(const homekit_value_t v) {
     if(on) {
         is_on = true;
         Serial.println("On");
-        digitalWrite(LED_BUILTIN, LOW);   // turn the LED on (HIGH is the voltage level)
+        updateBrightness();
     } else  {
         is_on = false;
         Serial.println("Off");
-        digitalWrite(LED_BUILTIN, HIGH); 
+        updateBrightness();
     }
 }
 
@@ -232,7 +231,6 @@ void updateBrightness()
   {
       int b = current_brightness;
       Serial.println(b);
-
       FastLED.setBrightness(b);
 
     }
