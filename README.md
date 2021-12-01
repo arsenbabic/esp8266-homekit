@@ -4,8 +4,8 @@ Homekit integration on ESP8266 based development board
 **Requirements:**
 - ESP8266 based development board
 - [Arduino IDE 1.8.x](https://www.arduino.cc/en/software)
-- FastLED library
-- Homekit-ESP8266 library
+- [FastLED](https://github.com/FastLED/FastLED) library
+- [Homekit-ESP8266](https://github.com/Mixiaoxiao/Arduino-HomeKit-ESP8266) library
 
 
 ESP8266 development board I am currently using is [Croduino NOVA2](https://e-radionica.com/en/croduino-nova2.html). 
