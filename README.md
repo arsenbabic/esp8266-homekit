@@ -3,6 +3,7 @@ Homekit integration on ESP8266 based development board
 
 **Requirements:**
 - ESP8266 based development board
+- DHT22 temperature and humidity sensor
 - [Arduino IDE 1.8.x](https://www.arduino.cc/en/software)
 - [FastLED](https://github.com/FastLED/FastLED) library
 - [Homekit-ESP8266](https://github.com/Mixiaoxiao/Arduino-HomeKit-ESP8266) library
