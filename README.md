@@ -6,9 +6,10 @@ Homekit integration on ESP8266 based development board
 - DHT22 temperature and humidity sensor
 - [Arduino IDE 1.8.x](https://www.arduino.cc/en/software)
 - [FastLED](https://github.com/FastLED/FastLED) library
-- [Homekit-ESP8266](https://github.com/Mixiaoxiao/Arduino-HomeKit-ESP8266) library
+- [Homekit-ESP32](https://github.com/Mixiaoxiao/Arduino-HomeKit-ESP32) library
 
 
-ESP8266 development board I am currently using is [Croduino NOVA2](https://e-radionica.com/en/croduino-nova2.html). 
+ESP8266 development board I am currently using is [Joy-it Node MCU ESP32](https://joy-it.net/en/products/SBC-NodeMCU-ESP32). 
 
 Data pin of the standard 5V WS2812B addressable LED strip is attached to pin 4 on the development board.  
+Data pin of the DHT22 sensor I'm using is attached to digital pin 18 on the development board.
